@@ -1,0 +1,65 @@
+{
+  "name": "determine_quality_distribution",
+  "title": "Determine Quality Distribution",
+  "summary": "Determines the mean, standard deviation, and coverage of a pair of fastq files",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "reads",
+      "label": "Reads",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fastq.gz", "*.fq.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "read_mates",
+      "label": "Read Mates",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fastq.gz", "*.fq.gz"
+      ],
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "mean_pair_qualities",
+      "label": "Mean Pair Qualities",
+      "class": "float",
+      "help": ""
+    },
+    {
+      "name": "standard_deviation_pair_qualities",
+      "label": "Standard Deviation Pair Qualities",
+      "class": "float",
+      "help": ""
+    },
+    {
+      "name": "coverage",
+      "label": "Coverage of Human Genome",
+      "class": "float",
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 72
+      }
+    },
+    "interpreter": "bash",
+    "file": "src/determine_quality_distribution.sh",
+    "distribution": "Ubuntu",
+    "release": "14.04"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {"systemRequirements": {"main": {"instanceType": "mem2_hdd2_x2"}},
+                      "assetDepends": [ { "id": "record-F8xb7V00V3qj5zQK2xGGPbB1" } ] }
+                    },
+  "access": {"network": ["*"]}
+}

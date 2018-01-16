@@ -1,0 +1,90 @@
+{
+  "name": "shift_quality",
+  "title": "Shift FASTQ Quality",
+  "summary": "Shifts the distribution of read qualities in a set of fastqs to a new, normally distributed set",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "reads",
+      "label": "Reads",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fastq.gz", "*.fq.gz"
+      ],
+      "help": "The reads fastq file (must be in order and paired with the mates fastq files)"
+    },
+    {
+      "name": "mates",
+      "label": "Read Mates",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fastq.gz", "*.fq.gz"
+      ],
+      "help": "The mate fastq files (must be in order and paired with the reads fastq files)"
+    },
+    {
+      "name": "starting_mean",
+      "label": "Starting Mean",
+      "class": "float",
+      "help": "What is the starting mean for the pair qualities of the initial fastqs"
+    },
+    {
+      "name": "starting_stdev",
+      "label": "Starting Standard Deviation",
+      "class": "float",
+      "help": "What is the starting standard deviation in the qualities of the initial fastqs"
+    },
+    {
+      "name": "downsample_fraction",
+      "label": "Downsample Fraction",
+      "class": "float",
+      "help": "What fraction is the desired final sample relative to the starting coverage (if starting coverage is 300x and desired coverage is 30x, this woul be 0.1)"
+    },
+    {
+      "name": "standard_deviation_shift",
+      "label": "Standard Deviation Shift",
+      "class": "float",
+      "optional": false,
+      "help": "How many standard deviations and in what direction should the distribution of read qualities be shifted from the input distribution"
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "output_reads",
+      "label": "Output Reads",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "output_mates",
+      "label": "Output Read Mates",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 400
+      }
+    },
+    "interpreter": "bash",
+    "file": "src/shift_quality.sh",
+    "distribution": "Ubuntu",
+    "release": "14.04"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {"systemRequirements": {"main": {"instanceType": "mem2_hdd2_x2"}},
+                      "assetDepends": [ { "id": "record-F8xb7V00V3qj5zQK2xGGPbB1" } ] }
+                    },
+  "access": {"network": ["*"]}
+}
