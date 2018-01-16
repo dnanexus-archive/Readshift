@@ -14,6 +14,17 @@ based on a specified starting distribution.
 
 Readshift does not simulate data, nor does it alter any bases or quality values. It simply downsamples selectively.
 
+## Evaluation Data
+
+We have applied Readshift to 200X Hiseq2500, 200X HiseqX, and 320X Novaseq data, shifting each by 0.5, 1.0, 1.5, and 2.0
+standard deviations in quality. This data is available from the DNAnexus platform. You will need an account to access it
+but there is no charge to creating an account, accessing, or downloading this data.
+
+The FASTQ and VCFs from running these through GATK3, GATK4, Sentieon, DeepVariant, Strelka2, and Freebayes pipelines can
+be accessed at [this DNAnexus project titled Readshift](https://platform.dnanexus.com/projects/F9K5zYQ0ZQBb5jJf6X2zZPv1/data/)
+
+An investigation on this data is detailed in our [Readshift blog post](https://blog.dnanexus.com/2018-01-16-evaluating-the-performance-of-ngs-pipelines-on-noisy-wgs-data/)
+
 ## Dependencies
 
 Readshift requires the numpy and scipy Python libraries. 
