@@ -1,10 +1,8 @@
-
 import sys
-import scipy.stats
 import numpy as np
-import random
 import argparse
 from itertools import izip
+import gzip
 
 # This function converts the sum of all quality values into an integer value
 def calculate_quality_score(quality_string, input_file, item_name):
@@ -34,21 +32,17 @@ parser.add_argument('--mates', action="store", dest="mates", required=True)
 # of memory. This argument causes the program to exit after hitting this limit.
 parser.add_argument('--maximum-reads', help="Compute statistics on at most this many reads", action="store", dest="maximum_reads", required=False)
 
-# These optional arguments are used because its easy for the DNAnexus app to just pull them from a file
-parser.add_argument('--output-mean-file', action="store", dest="output_mean", required=False)
-parser.add_argument('--output-stdev-file', action="store", dest="output_stdev", required=False)
-parser.add_argument('--output-coverage-file', action="store", dest="output_coverage", required=False)
+parser.add_argument('--output-quality-score-file', action="store", dest="output_quality_score_file", required=True)
 
 arguments = parser.parse_args()
 
-quals = []
-
-# Record the number of lines iterated over for 
+# Record the number of lines iterated over for
 line_number = 0
 bases = 0
 
 # Loop over the reads and the mates together
-with open(arguments.reads) as reads_file, open(arguments.mates) as mates_file: 
+output_quality_score = gzip.open(arguments.output_quality_score_file, 'wb')
+with gzip.open(arguments.reads, 'rb') as reads_file, gzip.open(arguments.mates, 'rb') as mates_file:
     for line, mate_line in izip(reads_file, mates_file):
 
         # The first line is the read name, currently this doesn't check to make sure the read names match
@@ -64,11 +58,11 @@ with open(arguments.reads) as reads_file, open(arguments.mates) as mates_file:
             error_probability += calculate_quality_score(mate_line.strip(), arguments.mates, mate_name)
 
             # Record the number of bases for coverage calculations
-            bases += len(line.strip()) + len(mate_line.strip())
+            bases = len(line.strip()) + len(mate_line.strip())
 
             # Append the value seen to an array. The size of this will determine the ultimate memory requirements
             # it is better for performance to pass only a subset of the FASTQ file to this.
-            quals.append(error_probability)
+            output_quality_score.write('{}\t{}\n'.format(error_probability, bases))
 
         line_number += 1
 
@@ -77,26 +71,4 @@ with open(arguments.reads) as reads_file, open(arguments.mates) as mates_file:
             if line_number > int(arguments.maximum_reads) * 4:
                 break
 
-if arguments.output_mean is not None:
-    output_mean_file = open(arguments.output_mean, 'w')
-    output_mean_file.write("%f" % np.mean(quals))
-    output_mean_file.close()
-else:
-    print "Mean Quality: %f" % np.mean(quals)
-
-if arguments.output_stdev is not None:
-    output_stdev_file = open(arguments.output_stdev, 'w')
-    output_stdev_file.write("%f" % np.std(quals))
-    output_stdev_file.close()
-else:
-    print "Standard Deviation: %f" % np.std(quals)
-
-if arguments.output_coverage is not None:
-    output_coverage_file = open(arguments.output_coverage, 'w')
-    output_coverage_file.write("%f" % (float(bases) / 3200000000.0))
-    output_coverage_file.close()
-else:
-    print "Coverage: %f" % (float(bases) / 3200000000.0)
-
-
-
+output_quality_score.close()
