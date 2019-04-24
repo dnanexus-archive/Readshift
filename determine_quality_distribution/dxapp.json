@@ -24,6 +24,22 @@
         "*.fastq.gz", "*.fq.gz"
       ],
       "help": ""
+    },
+    {
+      "name": "captured_size_in_bp",
+      "label": "Size of the captured region",
+      "class": "int",
+      "optional": false,
+      "default": 3234830000,
+      "help": "Number of basepairs of targeted region. Default set to 3,234.83 Mb, which is an estimated Human Genome size."
+    },
+    {
+      "name": "num_reads_per_chunk",
+      "label": "Number of reads per chunk",
+      "class": "int",
+      "optional": false,
+      "default": 75000000,
+      "help": "Number of reads per chunk. Default set to 75000000, which is an estimate of 5X WGS (assuming a length of 200bp per read-pair)."
     }
   ],
   "outputSpec": [
@@ -58,7 +74,7 @@
     "release": "14.04"
   },
   "regionalOptions": {
-    "aws:us-east-1": {"systemRequirements": {"main": {"instanceType": "mem3_hdd2_x2"}},
+    "aws:us-east-1": {"systemRequirements": {"main": {"instanceType": "mem1_ssd1_x32"}},
                       "assetDepends": [ { "id": "record-F8xb7V00V3qj5zQK2xGGPbB1" } ] }
                     },
   "access": {"network": ["*"]}
