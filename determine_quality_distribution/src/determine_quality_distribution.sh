@@ -28,7 +28,7 @@ main() {
   cat "read_prefix.txt" | xargs -n1 -P$(nproc) -I '{}' python /get_error_prob.py --reads '{}'_1.fastq.gz --mates '{}'_2.fastq.gz --output-quality-score-file '{}'_errorprob.txt.gz
 
   ls *_errorprob.txt.gz
-  zcat *_errorprob.txt.gz | awk 'BEGIN{FS= "\t"; bases=0; delta=0; avg=0; mean2=0;}{delta = $1 - avg; avg += delta / NR; mean2 += delta * ($1 - avg); bases += $2;} END { print avg >> "mean_pair_qualities.txt"; print sqrt(mean2 / NR) >> "standard_deviation_pair_qualities.txt";  print bases >> "total_reads.txt"}'
+  zcat *_errorprob.txt.gz | awk 'BEGIN{FS= "\t"; bases=0; delta=0; avg=0; mean2=0;}{delta = $1 - avg; avg += delta / NR; mean2 += delta * ($1 - avg); bases += $2;} END { print avg >> "mean_pair_qualities.txt"; print sqrt(mean2 / (NR-1)) >> "standard_deviation_pair_qualities.txt";  print bases >> "total_reads.txt"}'
 
   mean_pair_qualities=$(cat "mean_pair_qualities.txt")
   standard_deviation_pair_qualities=$(cat "standard_deviation_pair_qualities.txt")
